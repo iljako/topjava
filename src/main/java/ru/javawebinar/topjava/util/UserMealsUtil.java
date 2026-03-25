@@ -5,9 +5,13 @@ import ru.javawebinar.topjava.model.UserMealWithExcess;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -28,8 +32,22 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with excess. Implement by cycles
-        return null;
+        // Сложность O(n)
+        Map<LocalDate, Integer> dayCalories = new HashMap<>();
+        meals.forEach(m ->
+                dayCalories.merge(m.getDateTime().toLocalDate(), m.getCalories(), Integer::sum)
+        );
+
+        List<UserMealWithExcess> userMealWithExcessList = new ArrayList<>();
+        meals.forEach(m -> {
+            if (TimeUtil.isBetweenHalfOpen(m.getDateTime().toLocalTime(), startTime, endTime)) {
+                boolean excess = dayCalories.get(m.getDateTime().toLocalDate()) > caloriesPerDay;
+                userMealWithExcessList.add(new UserMealWithExcess(
+                        m.getDateTime(), m.getDescription(), m.getCalories(), excess
+                ));
+            }
+        });
+        return userMealWithExcessList;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
