@@ -26,26 +26,9 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
 
-        List<Meal> mealList = MealsUtil.MEALS;
-        int caloriesPerDay = MealsUtil.CALORIES_PER_DAY;
-
-        Map<LocalDate, Integer> sumCaloriesPerDay = mealList.stream()
-                .collect(Collectors.groupingBy(
-                        meal -> meal.getDateTime().toLocalDate(),
-                        Collectors.summingInt(Meal::getCalories)
-                ));
-
         List<MealTo> mealToList = new ArrayList<>();
-
-        for (Meal meal : mealList) {
-            int daySum = sumCaloriesPerDay.get(meal.getDateTime().toLocalDate());
-            boolean excess = daySum > caloriesPerDay;
-
-            mealToList.add(new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess));
-        }
-
+        mealToList = MealsUtil.getMealsWithExcess(MealsUtil.mealsList, MealsUtil.CALORIES_PER_DAY);
         request.setAttribute("meals", mealToList);
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        //response.sendRedirect("meals.jsp");
     }
 }

@@ -16,7 +16,7 @@ public class MealsUtil {
 
     public static final int CALORIES_PER_DAY = 2500;
 
-    public static final List<Meal> MEALS = Arrays.asList(
+    public static final List<Meal> mealsList = Arrays.asList(
             new Meal(LocalDateTime.of(2026, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2026, Month.JANUARY, 30, 13, 0), "Обед", 1600),
             new Meal(LocalDateTime.of(2026, Month.JANUARY, 30, 20, 0), "Ужин", 1500),
@@ -45,7 +45,6 @@ public class MealsUtil {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-//                      Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
                 );
 
         return meals.stream()
@@ -56,5 +55,10 @@ public class MealsUtil {
 
     private static MealTo createTo(Meal meal, boolean excess) {
         return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    public static List<MealTo> getMealsWithExcess(List<Meal> meals, int caloriesPerDay) {
+        return filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
+
     }
 }
