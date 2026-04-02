@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="ru.javawebinar.topjava.model.MealTo" %>
-<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
-<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html lang="ru">
 <head>
@@ -29,21 +28,13 @@
     </thead>
 
     <tbody>
-        <%
-            List<MealTo> meals = (List<MealTo>) request.getAttribute("meals");
-            if (meals != null) {
-                for (MealTo meal : meals) {
-                    String css = meal.isExcess() ? "excess" : "ok";
-        %>
-            <tr class="<%= css %>">
-                <td><%= TimeUtil.format(meal.getDateTime()) %></td>
-                <td><%= meal.getDescription() %></td>
-                <td><%= meal.getCalories() %></td>
-            </tr>
-        <%
-                }
-            }
-        %>
+    <c:forEach items="${meals}" var="meal">
+        <tr class="${meal.excess ? 'excess' : 'ok'}">
+            <td>${fn:replace(meal.dateTime, 'T', ' ')}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
+        </tr>
+    </c:forEach>
     </tbody>
 </table>
 
