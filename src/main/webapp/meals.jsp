@@ -18,12 +18,15 @@
 <hr>
 <h2>Meals</h2>
 
+<p><a href="meals?action=create">+ Add meal</a></p>
+
 <table>
     <thead>
     <tr>
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th colspan="2">Actions</th>
     </tr>
     </thead>
 
@@ -33,6 +36,8 @@
             <td>${fn:replace(meal.dateTime, 'T', ' ')}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&id=${meal.id}">Edit</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}" onclick="return confirm('Delete?')">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>
