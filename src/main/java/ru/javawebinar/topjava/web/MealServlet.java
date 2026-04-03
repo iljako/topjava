@@ -21,11 +21,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private final MealRepository repo = InMemoryMealRepository.getInstance();
+    private final MealRepository repo = new InMemoryMealRepository();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
         if (action == null || "list".equals(action)) {
@@ -50,13 +51,14 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         Integer id = parseId(request.getParameter("id"));
         LocalDateTime dt = LocalDateTime.parse(request.getParameter("dateTime"), FMT);
         String desc = request.getParameter("description");
         int cal = Integer.parseInt(request.getParameter("calories"));
 
         Meal meal = new Meal(id, dt, desc, cal);
-        repo.save(meal);
+        Meal saved = repo.save(meal);
 
         resp.sendRedirect("meals");
     }

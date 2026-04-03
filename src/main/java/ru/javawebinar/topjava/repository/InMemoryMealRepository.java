@@ -6,36 +6,36 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealRepository implements MealRepository {
 
     private static final Map<Integer, Meal> map = new ConcurrentHashMap<>();
-    private static int nextId = 1;
+    private final AtomicInteger nextId = new AtomicInteger(1);
 
-    private static InMemoryMealRepository instance;
-
-    private InMemoryMealRepository() {
+    public InMemoryMealRepository() {
         for (Meal meal : MealsUtil.mealsList) {
             save(meal);
         }
     }
 
-    public static synchronized InMemoryMealRepository getInstance() {
-        if (instance == null) instance = new InMemoryMealRepository();
-        return instance;
-    }
-
-
     @Override
-    public void save(Meal meal) {
+    public Meal save(Meal meal) {
         if (meal.getId() == null) {
-            meal.setId(nextId++);
+            int id = nextId.getAndIncrement();
+            meal.setId(id);
+        } else {
+            if (!map.containsKey(meal.getId())) {
+                throw new IllegalArgumentException("Meal with id=" + meal.getId() + " not found for update");
+            }
         }
+
         map.put(meal.getId(), meal);
+        return  meal;
     }
 
     @Override
-    public Meal get(Integer id) {
+    public Meal get(int id) {
         return map.get(id);
     }
 
@@ -45,7 +45,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(int id) {
         map.remove(id);
     }
 }
