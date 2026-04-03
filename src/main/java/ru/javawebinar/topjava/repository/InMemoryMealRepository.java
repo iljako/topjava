@@ -24,14 +24,11 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.getId() == null) {
             int id = nextId.getAndIncrement();
             meal.setId(id);
+            map.put(id, meal);
+            return meal;
         } else {
-            if (!map.containsKey(meal.getId())) {
-                throw new IllegalArgumentException("Meal with id=" + meal.getId() + " not found for update");
-            }
+            return map.computeIfPresent(meal.getId(), (key, oldValue) -> meal);
         }
-
-        map.put(meal.getId(), meal);
-        return  meal;
     }
 
     @Override

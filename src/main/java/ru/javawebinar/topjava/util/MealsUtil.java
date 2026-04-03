@@ -29,7 +29,7 @@ public class MealsUtil {
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(Collectors.groupingBy(
-                        m -> m.getDateTime().toLocalDate(),
+                        m -> m.getDate(),
                         Collectors.summingInt(Meal::getCalories)
                 ));
 

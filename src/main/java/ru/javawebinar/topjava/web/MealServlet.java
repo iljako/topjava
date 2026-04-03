@@ -21,8 +21,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private final MealRepository repo = new InMemoryMealRepository();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+    private MealRepository repo;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        repo = new InMemoryMealRepository();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,6 +52,9 @@ public class MealServlet extends HttpServlet {
         } else if ("delete".equals(action)) {
             repo.delete(Integer.parseInt(request.getParameter("id")));
             resp.sendRedirect("meals");
+        } else {
+            request.setAttribute("meals", repo.getAll());
+            request.getRequestDispatcher("/meals.jsp").forward(request, resp);
         }
     }
 
