@@ -21,8 +21,8 @@ public class InMemoryUserRepository implements UserRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        save(new User(1, "User", "user@yandex.ru", "password", Role.USER));
-        save(new User(2, "Admin", "admin@gmail.com", "password", Role.ADMIN));
+        save(new User(null, "User", "user@yandex.ru", "password", Role.USER));
+        save(new User(null, "Admin", "admin@gmail.com", "password", Role.ADMIN));
     }
 
     @Override

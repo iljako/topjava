@@ -21,10 +21,6 @@ public class MealServlet extends HttpServlet {
 
     private MealRepository repository;
 
-    private int userId() {
-        return SecurityUtil.authUserId();
-    }
-
     @Override
     public void init() {
         repository = new InMemoryMealRepository();
@@ -32,7 +28,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int userId = userId();
+        int userId = SecurityUtil.authUserId();
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
@@ -49,7 +45,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        int userId = userId();
+        int userId = SecurityUtil.authUserId();
 
         switch (action == null ? "all" : action) {
             case "delete":
