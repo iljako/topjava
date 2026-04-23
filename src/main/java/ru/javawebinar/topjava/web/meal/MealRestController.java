@@ -60,6 +60,6 @@ public class MealRestController {
         int userId = SecurityUtil.authUserId();
         int caloriesPerDay = SecurityUtil.authUserCaloriesPerDay();
         log.info("getAllFiltered start={}, end={}, userId={}", startDate, endDate, userId);
-        return MealsUtil.getTos(service.getAllFiltered(userId, startDate, endDate), caloriesPerDay);
+        return MealsUtil.getFilteredTos(service.getAllFiltered(userId, startDate, endDate), caloriesPerDay, startTime, endTime);
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -51,25 +52,26 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        Map<Integer, Meal> meals = mealsMap.get(userId);
-        return CollectionUtils.isEmpty(meals) ? Collections.emptyList() :
-                meals.values().stream()
-                        .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                        .collect(Collectors.toList());
+        return getMealsFiltered(userId, meal -> true);
     }
 
     @Override
     public List<Meal> getAllFiltered(int userId, LocalDate start, LocalDate end) {
+        return getMealsFiltered(userId, meal -> {
+            LocalDate mealDate = meal.getDateTime().toLocalDate();
+            if (start != null && mealDate.isBefore(start)) return false;
+            if (end != null && !mealDate.isBefore(end.plusDays(1))) return false;
+            return true;
+        });
+    }
+
+    private List<Meal> getMealsFiltered(int userId, Predicate<Meal> filter) {
         Map<Integer, Meal> meals = mealsMap.get(userId);
         if (CollectionUtils.isEmpty(meals)) {
             return Collections.emptyList();
         }
         return meals.values().stream()
-                .filter(m -> {
-                    LocalDate date = m.getDateTime().toLocalDate();
-                    return (start == null || !date.isBefore(start)) &&
-                            (end == null || !date.isAfter(end));
-                })
+                .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }

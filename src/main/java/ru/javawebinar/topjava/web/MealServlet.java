@@ -22,12 +22,21 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
+    private ClassPathXmlApplicationContext springContext;
     private MealRestController controller;
 
     @Override
     public void init() {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-        controller = ctx.getBean(MealRestController.class);
+        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        controller = springContext.getBean(MealRestController.class);
+    }
+
+    @Override
+    public void destroy() {
+        if (springContext != null) {
+            springContext.close();
+        }
+        super.destroy();
     }
 
     @Override
