@@ -22,7 +22,20 @@
     <hr/>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
-    <br><br>
+    <br>
+    <form action="meals" method="get" style="margin: 10px 0;">
+            <label>От:
+                <input type="date" name="startDate" value="${param.startDate}">
+                <input type="time" name="startTime" value="${param.startTime}">
+            </label>
+            <label>До:
+                <input type="date" name="endDate" value="${param.endDate}">
+                <input type="time" name="endTime" value="${param.endTime}">
+            </label>
+            <button type="submit">Фильтр</button>
+            <a href="meals">Сброс</a>
+        </form>
+    <br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
