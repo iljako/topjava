@@ -60,7 +60,7 @@ public class InMemoryMealRepository implements MealRepository {
         return getMealsFiltered(userId, meal -> {
             LocalDate mealDate = meal.getDateTime().toLocalDate();
             if (start != null && mealDate.isBefore(start)) return false;
-            if (end != null && !mealDate.isBefore(end.plusDays(1))) return false;
+            if (end != null && mealDate.isAfter(end)) return false;
             return true;
         });
     }
