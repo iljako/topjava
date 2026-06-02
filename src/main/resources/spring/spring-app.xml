@@ -9,10 +9,18 @@
         <constructor-arg name="repository" ref="inmemoryUserRepository"/>
     </bean>
 -->
-    <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
-
     <context:component-scan base-package="ru.javawebinar.**.service"/>
 
     <context:component-scan base-package="ru.javawebinar.**.web"/>
+
+    <!-- Профиль для PostgreSQL -->
+    <beans profile="postgres">
+        <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
+    </beans>
+
+    <!-- Профиль для InMemory -->
+    <beans profile="inmemory">
+        <context:component-scan base-package="ru.javawebinar.**.repository.inmemory"/>
+    </beans>
 
 </beans>
