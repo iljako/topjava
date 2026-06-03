@@ -21,7 +21,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Ignore
-@ActiveProfiles("inmemory")
 public class InMemoryAdminRestControllerSpringTest {
 
     @Autowired
