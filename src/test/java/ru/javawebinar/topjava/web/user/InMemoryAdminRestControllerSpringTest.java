@@ -19,7 +19,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
         "classpath:spring/spring-inmemory.xml"
 })
 @RunWith(SpringRunner.class)
-@Ignore
 public class InMemoryAdminRestControllerSpringTest {
 
     @Autowired

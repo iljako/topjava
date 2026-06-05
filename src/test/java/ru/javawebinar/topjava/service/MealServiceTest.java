@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -31,6 +28,8 @@ public class MealServiceTest {
     @Autowired
     private MealService service;
 
+    private static final int ADMIN_MEAL1_ID = 100010;
+
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
@@ -44,17 +43,19 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal created = getNew();
-        Meal newMeal = service.create(created, USER_ID);
-        Assert.assertNotNull(newMeal);
-        Assert.assertNotNull(newMeal.getId());
-        assertMatch(newMeal, created);
+        Meal created = service.create(getNew(), USER_ID);
+        Assert.assertNotNull(created);
+        Assert.assertNotNull(created.getId());
+        Meal expected = getNew();
+        expected.setId(created.getId());
+        assertMatch(created, expected);
+        assertMatch(service.get(created.getId(), USER_ID), expected);
     }
 
     @Test
     public void get() {
         Meal actual = service.get(MEAL1_ID, USER_ID);
-        assertMatch(actual, MEAL1);
+        assertMatch(actual, meal1);
     }
 
     @Test
@@ -66,18 +67,30 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
-    }
-
-    @Test
-    public void updateNotFound() {
-        assertThrows(NotFoundException.class,
-                () -> service.update(new Meal(1, LocalDate.now().atTime(10,00), "", 100), USER_ID));
+        Meal expected = getUpdated();
+        assertMatch(service.get(MEAL1_ID, USER_ID), expected);
     }
 
     @Test
     public void getAll() {
         assertMatch(service.getAll(USER_ID), MEALS);
+    }
+
+    @Test
+    public void getAnotherUserMeal() {
+        assertThrows(NotFoundException.class, () -> service.get(ADMIN_MEAL1_ID, USER_ID));
+    }
+
+    @Test
+    public void deleteAnotherUserMeal() {
+        assertThrows(NotFoundException.class, () -> service.delete(ADMIN_MEAL1_ID, USER_ID));
+    }
+
+    @Test
+    public void updateAnotherUserMeal() {
+        Meal updated = getUpdated();
+        updated.setId(ADMIN_MEAL1_ID);
+        assertThrows(NotFoundException.class, () -> service.update(updated, USER_ID));
     }
 
     @Test

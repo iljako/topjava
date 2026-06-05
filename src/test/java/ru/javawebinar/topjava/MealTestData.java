@@ -20,20 +20,20 @@ public class MealTestData {
     public static final int MEAL6_ID = START_SEQ + 8;
     public static final int MEAL7_ID = START_SEQ + 9;
 
-    public static final Meal MEAL1 = new Meal(MEAL1_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(10, 0), "Завтрак", 500);
-    public static final Meal MEAL2 = new Meal(MEAL2_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(13, 0), "Обед", 1000);
-    public static final Meal MEAL3 = new Meal(MEAL3_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(20, 0), "Ужин", 500);
-    public static final Meal MEAL4 = new Meal(MEAL4_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(0, 0), "Еда на граничное значение", 100);
-    public static final Meal MEAL5 = new Meal(MEAL5_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(10, 0), "Завтрак", 1000);
-    public static final Meal MEAL6 = new Meal(MEAL6_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(13, 0), "Обед", 500);
-    public static final Meal MEAL7 = new Meal(MEAL7_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(20, 0), "Ужин", 410);
+    public static final Meal meal1 = new Meal(MEAL1_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(10, 0), "Завтрак", 500);
+    public static final Meal meal2 = new Meal(MEAL2_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(13, 0), "Обед", 1000);
+    public static final Meal meal3 = new Meal(MEAL3_ID, LocalDate.of(2026, Month.JANUARY, 30).atTime(20, 0), "Ужин", 500);
+    public static final Meal meal4 = new Meal(MEAL4_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(0, 0), "Еда на граничное значение", 100);
+    public static final Meal meal5 = new Meal(MEAL5_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(10, 0), "Завтрак", 1000);
+    public static final Meal meal6 = new Meal(MEAL6_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(13, 0), "Обед", 500);
+    public static final Meal meal7 = new Meal(MEAL7_ID, LocalDate.of(2026, Month.JANUARY, 31).atTime(20, 0), "Ужин", 410);
 
     public static final List<Meal> MEALS = Collections.unmodifiableList(Arrays.asList(
-            MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1
+            meal7, meal6, meal5, meal4, meal3, meal2, meal1
     ));
 
     public static final List<Meal> MEALS_FILTERED = Collections.unmodifiableList(Arrays.asList(
-            MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1
+            meal7, meal6, meal5, meal4, meal3, meal2, meal1
     ));
 
     public static Meal getNew() {
@@ -41,7 +41,7 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        return new Meal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 400);
+        return new Meal(MEAL1_ID, meal1.getDateTime(), "Обновленный завтрак", 400);
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
