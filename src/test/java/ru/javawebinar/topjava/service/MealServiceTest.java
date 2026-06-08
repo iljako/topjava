@@ -1,7 +1,11 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Ignore;
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +18,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -26,11 +32,36 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@Ignore
 public class MealServiceTest {
+
+    private static Map<String, Long> testTimings = new LinkedHashMap<>();
+
+    @Rule
+    public TestRule timeLogger = new TestWatcher() {
+        private long startTime;
+
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+        }
+
+        @Override
+        protected void finished(Description description) {
+            long duration = System.currentTimeMillis() - startTime;
+            String testName = description.getMethodName();
+            testTimings.put(testName, duration);
+            System.out.println("Test " + testName + " execution time: " + duration + " ms");
+        }
+    };
 
     @Autowired
     private MealService service;
+
+    @AfterClass
+    public static void printSummary() {
+        System.out.println("\n=== Test execution summary ===");
+        testTimings.forEach((name, time) -> System.out.println(name + " - " + time + " ms"));
+    }
 
     @Test
     public void delete() {
