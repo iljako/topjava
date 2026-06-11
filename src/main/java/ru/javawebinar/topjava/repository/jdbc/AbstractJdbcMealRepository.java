@@ -13,7 +13,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class AbstractJdbcMealRepository implements MealRepository {
+public abstract class AbstractJdbcMealRepository<D> implements MealRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -30,9 +30,7 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
 
     protected abstract RowMapper<Meal> getRowMapper();
 
-    protected Object convertDateTime(LocalDateTime dateTime) {
-        return dateTime;
-    }
+    protected abstract D convertDateTime(LocalDateTime dateTime);
 
     @Override
     public Meal save(Meal meal, int userId) {

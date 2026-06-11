@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.sql.ResultSet;
@@ -12,9 +13,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Profile("hsqldb")
+@Profile(Profiles.HSQL_DB)
 @Repository
-public class HsqlJdbcMealRepository extends AbstractJdbcMealRepository {
+public class HsqlJdbcMealRepository extends AbstractJdbcMealRepository<Timestamp> {
 
     private static final RowMapper<Meal> ROW_MAPPER = new RowMapper<Meal>() {
         @Override
@@ -41,7 +42,7 @@ public class HsqlJdbcMealRepository extends AbstractJdbcMealRepository {
     }
 
     @Override
-    protected Object convertDateTime(LocalDateTime dateTime) {
+    protected Timestamp convertDateTime(LocalDateTime dateTime) {
         return Timestamp.valueOf(dateTime);
     }
 }

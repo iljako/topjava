@@ -6,11 +6,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 
-@Profile("postgres")
+import java.time.LocalDateTime;
+
+@Profile(Profiles.POSTGRES_DB)
 @Repository
-public class JdbcMealRepository extends AbstractJdbcMealRepository {
+public class JdbcMealRepository extends AbstractJdbcMealRepository<LocalDateTime> {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -21,5 +24,10 @@ public class JdbcMealRepository extends AbstractJdbcMealRepository {
     @Override
     protected RowMapper<Meal> getRowMapper() {
         return ROW_MAPPER;
+    }
+
+    @Override
+    protected LocalDateTime convertDateTime(LocalDateTime dateTime) {
+        return dateTime;
     }
 }
