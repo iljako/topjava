@@ -49,15 +49,6 @@
         </bean>
     </beans>
 
-    <beans profile="jpa">
-        <context:component-scan base-package="ru.javawebinar.topjava.repository.jpa"/>
-    </beans>
-
-    <beans profile="datajpa">
-        <context:component-scan base-package="ru.javawebinar.topjava.repository.datajpa"/>
-        <jpa:repositories base-package="ru.javawebinar.topjava.repository.datajpa"/>
-    </beans>
-
     <beans profile="jpa, datajpa">
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
@@ -65,7 +56,8 @@
             <property name="jpaPropertyMap">
                 <map>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="${hibernate.use_sql_comments}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}"
+                           value="${hibernate.use_sql_comments}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
                 </map>
             </property>
@@ -80,6 +72,15 @@
 
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
+    </beans>
+
+    <beans profile="jpa">
+        <context:component-scan base-package="ru.javawebinar.topjava.repository.jpa"/>
+    </beans>
+
+    <beans profile="datajpa">
+        <context:component-scan base-package="ru.javawebinar.topjava.repository.datajpa"/>
+        <jpa:repositories base-package="ru.javawebinar.topjava.repository.datajpa"/>
     </beans>
 
 </beans>

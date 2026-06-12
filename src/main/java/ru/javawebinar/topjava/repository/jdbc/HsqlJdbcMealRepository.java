@@ -36,10 +36,6 @@ public class HsqlJdbcMealRepository extends AbstractJdbcMealRepository<Timestamp
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
-    @Override
-    protected RowMapper<Meal> getRowMapper() {
-        return ROW_MAPPER;
-    }
 
     @Override
     protected Timestamp convertDateTime(LocalDateTime dateTime) {

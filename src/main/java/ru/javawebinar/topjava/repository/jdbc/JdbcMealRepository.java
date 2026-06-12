@@ -22,11 +22,6 @@ public class JdbcMealRepository extends AbstractJdbcMealRepository<LocalDateTime
     }
 
     @Override
-    protected RowMapper<Meal> getRowMapper() {
-        return ROW_MAPPER;
-    }
-
-    @Override
     protected LocalDateTime convertDateTime(LocalDateTime dateTime) {
         return dateTime;
     }
