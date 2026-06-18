@@ -29,7 +29,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping
-    public String list(Model model) {
+    public String getAll(Model model) {
         List<MealTo> meals = super.getAll();
         model.addAttribute("meals", meals);
         return "meals";
@@ -66,7 +66,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/delete")
-    public String deleteMeal(HttpServletRequest request) {
+    public String delete(HttpServletRequest request) {
         int id = Integer.parseInt(request.getParameter("id"));
         super.delete(id);
         return "redirect:/meals";

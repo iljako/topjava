@@ -15,9 +15,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -50,27 +49,22 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
+        ValidationUtil.validate(validator, user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            insertRoles(user);
+        } else if (namedParameterJdbcTemplate.update("""
+                   UPDATE users SET name=:name, email=:email, password=:password, 
+                   registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
+                """, parameterSource) == 0) {
+            return null;
         } else {
-            if (namedParameterJdbcTemplate.update("""
-                       UPDATE users SET name=:name, email=:email, password=:password, 
-                       registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                    """, parameterSource) == 0) {
-                return null;
-            }
             deleteRoles(user.getId());
-            insertRoles(user);
         }
+        insertRoles(user);
         return user;
     }
 
