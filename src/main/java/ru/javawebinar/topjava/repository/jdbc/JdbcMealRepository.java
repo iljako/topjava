@@ -15,7 +15,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class JdbcMealRepository implements MealRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertMeal;
-    private final Validator validator;
 
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate,
@@ -40,7 +38,6 @@ public class JdbcMealRepository implements MealRepository {
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.validator = validator;
     }
 
     @Override

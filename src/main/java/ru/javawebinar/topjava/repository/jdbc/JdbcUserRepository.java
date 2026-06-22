@@ -17,7 +17,6 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.Validator;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -32,7 +31,6 @@ public class JdbcUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertUser;
-    private final Validator validator;
 
     @Autowired
     public JdbcUserRepository(JdbcTemplate jdbcTemplate,
@@ -44,7 +42,6 @@ public class JdbcUserRepository implements UserRepository {
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.validator = validator;
     }
 
     @Override
@@ -78,7 +75,7 @@ public class JdbcUserRepository implements UserRepository {
                     new BatchPreparedStatementSetter() {
                         @Override
                         public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            Role role = user.getRoles().stream().skip(i).findFirst().orElseThrow();
+                            Role role = user.getRoles().toArray(new Role[0])[i];
                             ps.setInt(1, user.getId());
                             ps.setString(2, role.name());
                         }
@@ -129,17 +126,15 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
 
         Map<Integer, Set<Role>> userRolesMap = new HashMap<>();
-        jdbcTemplate.query("SELECT user_id, role FROM user_role", (rs) -> {
+        jdbcTemplate.query("SELECT user_id, role FROM user_role", rs -> {
             int userId = rs.getInt("user_id");
-            String roleStr = rs.getString("role");
-            Role role = Role.valueOf(roleStr);
+            Role role = Role.valueOf(rs.getString("role"));
             userRolesMap.computeIfAbsent(userId, k -> EnumSet.noneOf(Role.class)).add(role);
         });
 
         for (User user : users) {
             user.setRoles(userRolesMap.getOrDefault(user.getId(), EnumSet.noneOf(Role.class)));
         }
-
         return users;
     }
 }

@@ -32,8 +32,15 @@ public abstract class AbstractServiceTest {
 
     //  Check root cause with AssertJ: https://github.com/junit-team/junit-framework/issues/2129#issuecomment-565712630
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
-        assertThatExceptionOfType(Throwable.class)
-                .isThrownBy(runnable::run)
-                .withRootCauseInstanceOf(rootExceptionClass);
+        assertThatExceptionOfType(Throwable.class).isThrownBy(runnable::run).satisfies(e -> {
+            Throwable current = e;
+            while (current != null) {
+                if (rootExceptionClass.isInstance(current)) {
+                    return;
+                }
+                current = current.getCause();
+            }
+            throw new AssertionError("Exception: " + rootExceptionClass.getSimpleName());
+        });
     }
 }

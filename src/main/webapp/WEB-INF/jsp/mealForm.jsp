@@ -7,8 +7,6 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <section>
-    <h3><a href="${pageContext.request.contextPath}"><spring:message code="app.home"/></a></h3>
-    <hr>
     <h2>
         <c:choose>
             <c:when test="${empty meal.id}"><spring:message code="meal.form.title.create"/></c:when>
@@ -16,7 +14,7 @@
         </c:choose>
     </h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="${pageContext.request.contextPath}/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
