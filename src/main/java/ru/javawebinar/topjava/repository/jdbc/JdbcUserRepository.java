@@ -49,7 +49,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        ValidationUtil.validate(validator, user);
+        ValidationUtil.validate(user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
@@ -66,6 +66,29 @@ public class JdbcUserRepository implements UserRepository {
         }
         insertRoles(user);
         return user;
+    }
+
+    private void deleteRoles(int userId) {
+        jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", userId);
+    }
+
+    private void insertRoles(User user) {
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            jdbcTemplate.batchUpdate("INSERT INTO user_role (user_id, role) VALUES (?, ?)",
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            Role role = user.getRoles().stream().skip(i).findFirst().orElseThrow();
+                            ps.setInt(1, user.getId());
+                            ps.setString(2, role.name());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return user.getRoles().size();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -93,6 +116,14 @@ public class JdbcUserRepository implements UserRepository {
         return user;
     }
 
+    private Set<Role> getRoles(int userId) {
+        List<String> roles = jdbcTemplate.queryForList(
+                "SELECT role FROM user_role WHERE user_id=?", String.class, userId);
+        return roles.stream()
+                .map(Role::valueOf)
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Role.class)));
+    }
+
     @Override
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
@@ -110,36 +141,5 @@ public class JdbcUserRepository implements UserRepository {
         }
 
         return users;
-    }
-
-    private Set<Role> getRoles(int userId) {
-        List<String> roles = jdbcTemplate.queryForList(
-                "SELECT role FROM user_role WHERE user_id=?", String.class, userId);
-        return roles.stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Role.class)));
-    }
-
-    private void insertRoles(User user) {
-        if (!CollectionUtils.isEmpty(user.getRoles())) {
-            jdbcTemplate.batchUpdate("INSERT INTO user_role (user_id, role) VALUES (?, ?)",
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            Role role = user.getRoles().stream().skip(i).findFirst().orElseThrow();
-                            ps.setInt(1, user.getId());
-                            ps.setString(2, role.name());
-                        }
-
-                        @Override
-                        public int getBatchSize() {
-                            return user.getRoles().size();
-                        }
-                    });
-        }
-    }
-
-    private void deleteRoles(int userId) {
-        jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", userId);
     }
 }

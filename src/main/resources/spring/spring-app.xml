@@ -17,4 +17,13 @@
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="ru.javawebinar.topjava.util.ValidationUtil"/>
+        <property name="targetMethod" value="setValidator"/>
+        <property name="arguments">
+            <list>
+                <ref bean="validator"/>
+            </list>
+        </property>
+    </bean>
 </beans>

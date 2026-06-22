@@ -11,7 +11,10 @@ import java.util.Set;
 
 public class ValidationUtil {
 
-    private ValidationUtil() {
+    private static Validator validator;
+
+    public static void setValidator(Validator validator) {
+        ValidationUtil.validator = validator;
     }
 
     public static <T> T checkNotFound(T object, int id) {
@@ -49,10 +52,12 @@ public class ValidationUtil {
         }
     }
 
-    public static <T> void validate(Validator validator, T bean) {
-        Set<ConstraintViolation<T>> violations = validator.validate(bean);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+    public static <T> void validate(T bean) {
+        if (validator != null) {
+            Set<ConstraintViolation<T>> violations = validator.validate(bean);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+            }
         }
     }
 }
