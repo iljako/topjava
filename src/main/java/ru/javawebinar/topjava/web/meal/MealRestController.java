@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -27,12 +27,31 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/between")
-    public List<MealTo> getBetween(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
-        return super.getBetween(startDate, startTime, endDate, endTime);
+    public List<MealTo> getBetweenRest(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String endTime) {
+
+        LocalDate startLocalDate = null;
+        LocalTime startLocalTime = null;
+        LocalDate endLocalDate = null;
+        LocalTime endLocalTime = null;
+
+        if (startDate != null && !startDate.isEmpty()) {
+            startLocalDate = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        }
+        if (startTime != null && !startTime.isEmpty()) {
+            startLocalTime = LocalTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_TIME);
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            endLocalDate = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        }
+        if (endTime != null && !endTime.isEmpty()) {
+            endLocalTime = LocalTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_TIME);
+        }
+
+        return super.getBetween(startLocalDate, startLocalTime, endLocalDate, endLocalTime);
     }
 
     @GetMapping("/{id}")

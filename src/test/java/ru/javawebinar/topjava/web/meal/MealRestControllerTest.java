@@ -2,21 +2,22 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -26,6 +27,9 @@ import static ru.javawebinar.topjava.web.SecurityUtil.setAuthUserId;
 class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = MealRestController.REST_URL + "/";
+
+    @Autowired
+    private MealService mealService;
 
     @Test
     void get() throws Exception {
@@ -52,8 +56,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
-                .andExpect(status().isNotFound());
+        assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, USER_ID));
     }
 
     @Test
@@ -102,39 +105,56 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
-                .andExpect(MEAL_MATCHER.contentJson(updated));
+        Meal actual = mealService.get(MEAL1_ID, USER_ID);
+        MEAL_MATCHER.assertMatch(actual, updated);
     }
 
     @Test
     void getBetween() throws Exception {
         setAuthUserId(USER_ID);
-
-        String startDateStr = "2020-01-30";
-        String startTimeStr = "09:00";
-        String endDateStr = "2020-01-31";
-        String endTimeStr = "20:00";
-
-        LocalDate startDate = LocalDate.parse(startDateStr);
-        LocalTime startTime = LocalTime.parse(startTimeStr);
-        LocalDate endDate = LocalDate.parse(endDateStr);
-        LocalTime endTime = LocalTime.parse(endTimeStr);
-
-        List<Meal> mealsByDate = meals.stream()
-                .filter(m -> (m.getDateTime().toLocalDate().isEqual(startDate) || m.getDateTime().toLocalDate().isAfter(startDate))
-                        && (m.getDateTime().toLocalDate().isEqual(endDate) || m.getDateTime().toLocalDate().isBefore(endDate)))
-                .collect(Collectors.toList());
-
-        List<MealTo> expected = MealsUtil.getFilteredTos(mealsByDate, UserTestData.user.getCaloriesPerDay(), startTime, endTime);
-
         perform(MockMvcRequestBuilders.get(REST_URL + "between")
-                .param("startDate", startDateStr)
-                .param("startTime", startTimeStr)
-                .param("endDate", endDateStr)
-                .param("endTime", endTimeStr))
+                .param("startDate", "2020-01-30")
+                .param("startTime", "09:00")
+                .param("endDate", "2020-01-31")
+                .param("endTime", "20:00"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(expected));
+                .andExpect(MEAL_TO_MATCHER.contentJson(MEAL_TOS_BETWEEN_1));
+    }
+
+    @Test
+    void getBetweenAllNull() throws Exception {
+        setAuthUserId(USER_ID);
+        perform(MockMvcRequestBuilders.get(REST_URL + "between"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
+    }
+
+    @Test
+    void getBetweenStartDateOnly() throws Exception {
+        setAuthUserId(USER_ID);
+        perform(MockMvcRequestBuilders.get(REST_URL + "between")
+                .param("startDate", "2020-01-30"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
+    }
+
+    @Test
+    void getBetweenWithEmptyStrings() throws Exception {
+        setAuthUserId(USER_ID);
+        perform(MockMvcRequestBuilders.get(REST_URL + "between")
+                .param("startDate", "")
+                .param("startTime", "")
+                .param("endDate", "")
+                .param("endTime", ""))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
     }
 }

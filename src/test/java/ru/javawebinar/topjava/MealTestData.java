@@ -28,8 +28,17 @@ public class MealTestData {
     public static final Meal meal7 = new Meal(MEAL1_ID + 6, of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 510);
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
     public static final List<MealTo> mealTo = MealsUtil.getTos(meals, UserTestData.user.getCaloriesPerDay());
+
     public static final Meal adminMeal1 = new Meal(ADMIN_MEAL_ID, of(2020, Month.JANUARY, 31, 14, 0), "Админ ланч", 510);
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
+
+    public static final List<MealTo> ALL_MEAL_TOS = MealsUtil.getTos(meals, UserTestData.user.getCaloriesPerDay());
+    public static final List<MealTo> MEAL_TOS_BETWEEN_1 = List.of(
+            new MealTo(meal6.getId(), meal6.getDateTime(), meal6.getDescription(), meal6.getCalories(), true),
+            new MealTo(meal5.getId(), meal5.getDateTime(), meal5.getDescription(), meal5.getCalories(), true),
+            new MealTo(meal2.getId(), meal2.getDateTime(), meal2.getDescription(), meal2.getCalories(), false),
+            new MealTo(meal1.getId(), meal1.getDateTime(), meal1.getDescription(), meal1.getCalories(), false)
+    );
 
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
