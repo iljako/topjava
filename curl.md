@@ -1,3 +1,4 @@
+
 # Получить всю еду текущего пользователя
 curl -X GET http://localhost:8080/topjava/rest/profile/meals
 
