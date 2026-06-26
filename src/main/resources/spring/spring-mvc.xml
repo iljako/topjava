@@ -49,4 +49,20 @@
         <property name="basenames" value="file:///#{systemEnvironment[TOPJAVA_ROOT]}/config/messages/app"/>
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
+
+    <bean id="customDateFormatter" class="ru.javawebinar.topjava.util.converters.CustomDateFormatter"/>
+    <bean id="customTimeFormatter" class="ru.javawebinar.topjava.util.converters.CustomTimeFormatter"/>
+
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
+            <set>
+                <ref bean="customDateFormatter"/>
+                <ref bean="customTimeFormatter"/>
+            </set>
+        </property>
+    </bean>
+
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
 </beans>

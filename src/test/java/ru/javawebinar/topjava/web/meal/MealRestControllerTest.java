@@ -93,6 +93,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         Meal created = MEAL_MATCHER.readFromJson(action);
         newMeal.setId(created.id());
         MEAL_MATCHER.assertMatch(created, newMeal);
+        MEAL_MATCHER.assertMatch(created, mealService.get(created.getId(), USER_ID));
     }
 
     @Test
@@ -120,7 +121,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(MEAL_TOS_BETWEEN_1));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTosBetween1));
     }
 
     @Test
@@ -130,18 +131,18 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
+                .andExpect(MEAL_TO_MATCHER.contentJson(allMealTos));
     }
 
     @Test
     void getBetweenStartDateOnly() throws Exception {
         setAuthUserId(USER_ID);
         perform(MockMvcRequestBuilders.get(REST_URL + "between")
-                .param("startDate", "2020-01-30"))
+                .param("startDate", "2020-01-31"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTosForStartDateOnly));
     }
 
     @Test
@@ -155,6 +156,6 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(ALL_MEAL_TOS));
+                .andExpect(MEAL_TO_MATCHER.contentJson(allMealTos));
     }
 }

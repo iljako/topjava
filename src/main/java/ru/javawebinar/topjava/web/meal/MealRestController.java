@@ -27,31 +27,11 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/between")
-    public List<MealTo> getBetweenRest(
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String startTime,
-            @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String endTime) {
-
-        LocalDate startLocalDate = null;
-        LocalTime startLocalTime = null;
-        LocalDate endLocalDate = null;
-        LocalTime endLocalTime = null;
-
-        if (startDate != null && !startDate.isEmpty()) {
-            startLocalDate = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        if (startTime != null && !startTime.isEmpty()) {
-            startLocalTime = LocalTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_TIME);
-        }
-        if (endDate != null && !endDate.isEmpty()) {
-            endLocalDate = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        if (endTime != null && !endTime.isEmpty()) {
-            endLocalTime = LocalTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_TIME);
-        }
-
-        return super.getBetween(startLocalDate, startLocalTime, endLocalDate, endLocalTime);
+    public List<MealTo> getBetweenRest( @RequestParam(required = false) LocalDate startDate,
+                                        @RequestParam(required = false) LocalTime startTime,
+                                        @RequestParam(required = false) LocalDate endDate,
+                                        @RequestParam(required = false) LocalTime endTime) {
+        return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
     @GetMapping("/{id}")
