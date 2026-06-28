@@ -46,6 +46,8 @@ public class MealTestData {
             new MealTo(meal4.getId(), meal4.getDateTime(), meal4.getDescription(), meal4.getCalories(), true)
     );
 
+    public static final List<Meal> adminMeal = List.of(adminMeal2, adminMeal1);
+
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
     }
