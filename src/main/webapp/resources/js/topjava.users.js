@@ -45,3 +45,17 @@ $(function () {
         })
     );
 });
+
+function updateEnabled(checkbox, id) {
+    var enabled = checkbox.checked;
+    $.ajax({
+        url: userAjaxUrl + id + '/enable?enabled=' + enabled,
+        type: "PATCH"
+    }).done(function () {
+        checkbox.closest('tr').toggleClass('disabled-user', !enabled);
+        successNoty("Updated");
+    }).fail(function (jqXHR) {
+        checkbox.checked = !enabled;
+        failNoty(jqXHR);
+    });
+}
