@@ -33,6 +33,10 @@ $(function () {
     );
 });
 
+function updateTableByData(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
+}
+
 function updateTable() {
     var startDate = $('#startDate').val();
     var endDate = $('#endDate').val();
@@ -50,9 +54,7 @@ function updateTable() {
         url += 'filter?' + params.join('&');
     }
 
-    $.get(url, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(url, updateTableByData);
 }
 
 function resetFilter() {
