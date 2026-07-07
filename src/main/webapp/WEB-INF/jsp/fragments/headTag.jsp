@@ -20,4 +20,8 @@
     <script src="webjars/datatables/1.13.5/js/jquery.dataTables.min.js" defer></script>
     <script src="webjars/datatables/1.13.5/js/dataTables.bootstrap4.min.js" defer></script>
     <script src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
+
+    <link rel="stylesheet" href="webjars/datetimepicker/2.5.20-1/jquery.datetimepicker.min.css">
+    <script src="webjars/jquery/3.7.1/jquery.min.js" defer></script>
+    <script src="webjars/datetimepicker/2.5.20-1/jquery.datetimepicker.full.min.js" defer></script>
 </head>
