@@ -17,11 +17,6 @@ function clearFilter() {
 }
 
 $(function () {
-    if (!$.fn.datetimepicker) {
-        console.error('DateTimePicker plugin not loaded!');
-        return;
-    }
-
     makeEditable(
         $("#datatable").DataTable({
             "ajax": {
