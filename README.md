@@ -145,3 +145,4 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Миграция приложения подсчета калорий на Spring Boot
 
 ### 11.05: Дедлайн на сдачу [выпускного проекта](https://github.com/JavaOPs/topjava/blob/master/graduation.md)
+
