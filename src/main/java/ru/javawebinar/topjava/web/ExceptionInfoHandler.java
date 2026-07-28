@@ -27,6 +27,10 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
 
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
+        return logAndGetErrorInfo(req, e, logException, errorType, ValidationUtil.getRootCause(e).toString());
+    }
+
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
     private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String detail) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
@@ -36,10 +40,6 @@ public class ExceptionInfoHandler {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), detail);
         }
         return new ErrorInfo(req.getRequestURL(), errorType, detail);
-    }
-
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
-        return logAndGetErrorInfo(req, e, logException, errorType, ValidationUtil.getRootCause(e).toString());
     }
 
     //  http://stackoverflow.com/a/22358422/548473
@@ -52,16 +52,6 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
-        String rootMsg = ValidationUtil.getRootCause(e).getMessage();
-        if (rootMsg != null) {
-            String lowerCaseMsg = rootMsg.toLowerCase();
-            if (lowerCaseMsg.contains("users_unique_email_idx")) {
-                return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, "User with this email already exists");
-            }
-            if (lowerCaseMsg.contains("meal_unique_user_datetime_idx")) {
-                return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, "Meal with this date/time already exists");
-            }
-        }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 

@@ -4,8 +4,13 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <nav class="navbar navbar-dark bg-dark py-0">
+    <div class="my-2">
+        <a href="?lang=ru" class="btn btn-sm btn-light">RU</a>
+        <a href="?lang=en" class="btn btn-sm btn-light">EN</a>
+    </div>
     <div class="container">
         <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png"> <spring:message code="app.title"/></a>
+
         <sec:authorize access="isAuthenticated()">
             <form:form class="form-inline my-2" action="logout" method="post">
                 <sec:authorize access="hasRole('ADMIN')">
@@ -16,10 +21,6 @@
                     <span class="fa fa-sign-out"></span>
                 </button>
             </form:form>
-            <div class="my-2">
-                <a href="?lang=ru" class="btn btn-sm btn-light">RU</a>
-                <a href="?lang=en" class="btn btn-sm btn-light">EN</a>
-            </div>
         </sec:authorize>
         <sec:authorize access="isAnonymous()">
             <form:form class="form-inline my-2" id="login_form" action="spring_security_check" method="post">
