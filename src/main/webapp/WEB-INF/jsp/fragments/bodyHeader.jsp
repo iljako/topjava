@@ -16,6 +16,10 @@
                     <span class="fa fa-sign-out"></span>
                 </button>
             </form:form>
+            <div class="my-2">
+                <a href="?lang=ru" class="btn btn-sm btn-light">RU</a>
+                <a href="?lang=en" class="btn btn-sm btn-light">EN</a>
+            </div>
         </sec:authorize>
         <sec:authorize access="isAnonymous()">
             <form:form class="form-inline my-2" id="login_form" action="spring_security_check" method="post">
