@@ -15,6 +15,7 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 import java.time.LocalDateTime;
 import java.time.Month;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,6 +26,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+
 
 class MealRestControllerTest extends AbstractControllerTest {
 
@@ -141,13 +143,13 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithDuplicateDateTime() throws Exception {
-        Meal duplicateMeal = new Meal(null, meal1.getDateTime(), "Duplicate", 100);
+        Meal duplicateMeal = new Meal(null, meal3.getDateTime(), "Duplicate", 100);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(duplicateMeal)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Meal with this date/time already exists"));
+                .andExpect(content().string(containsString("Meal with this date/time already exists")));
     }
 }
