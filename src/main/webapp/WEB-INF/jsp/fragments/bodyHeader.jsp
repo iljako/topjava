@@ -2,12 +2,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <nav class="navbar navbar-dark bg-dark py-0">
     <div class="my-2">
-        <a href="?lang=ru" class="btn btn-sm btn-light">RU</a>
-        <a href="?lang=en" class="btn btn-sm btn-light">EN</a>
+        <a href="#" onclick="return changeLang('ru')" class="btn btn-sm btn-light">RU</a>
+        <a href="#" onclick="return changeLang('en')" class="btn btn-sm btn-light">EN</a>
     </div>
+
     <div class="container">
         <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png"> <spring:message code="app.title"/></a>
 

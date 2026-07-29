@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Assumptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
@@ -27,7 +28,11 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 })
 //@WebAppConfiguration
 //@ExtendWith(SpringExtension.class)
-@Transactional
+@Sql(
+        scripts = "classpath:db/populateDB.sql",
+        config = @SqlConfig(encoding = "UTF-8"),
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
 

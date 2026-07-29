@@ -27,4 +27,14 @@
     <script src="webjars/datatables/1.13.5/js/dataTables.bootstrap4.min.js" defer></script>
     <script src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
     <script src="webjars/datetimepicker/2.5.20-1/build/jquery.datetimepicker.full.min.js" defer></script>
+
+    <script>
+        function changeLang(lang) {
+           var url = new URL(window.location.href);
+           url.searchParams.set('lang', lang);
+           window.location.href = url.toString();
+           return false;
+       }
+    </script>
+
 </head>

@@ -14,6 +14,7 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -132,7 +133,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithInvalidData() throws Exception {
-        Meal invalidMeal = new Meal(null, LocalDateTime.of(2020, Month.FEBRUARY, 1, 18, 0), "  ", 5); // description < 2, calories < 10
+        Meal invalidMeal = new Meal(null, LocalDateTime.of(2020, Month.FEBRUARY, 1, 18, 0), "  ", 5);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
@@ -144,7 +145,9 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void createWithDuplicateDateTime() throws Exception {
         Meal duplicateMeal = new Meal(null, meal3.getDateTime(), "Duplicate", 100);
+
         perform(MockMvcRequestBuilders.post(REST_URL)
+                .locale(Locale.ENGLISH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(duplicateMeal)))
